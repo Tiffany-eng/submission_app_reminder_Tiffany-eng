@@ -1,26 +1,38 @@
 #!/bin/bash
 
+echo "Creating Environment..."
+
+# Get the directory where the script is located
+dir="$(dirname "$0")"
+
 #prompt user for their name
 echo -n "Enter Your name:"
 read user_name
 
-mkdir -p submission_reminder_app/app
-mkdir -p submission_reminder_app/modules
-mkdir -p submission_reminder_app/assets
-mkdir -p submission_reminder_app/config
+#Define the base directory
+base_dir="$dir/submission_reminder_${user_name}"
+
+#Create the main directory
+mkdir -p "$base_dir"
+
+#Create subdirectories
+mkdir -p "$base_dir/app"
+mkdir -p "$base_dir/modules"
+mkdir -p "$base_dir/assets"
+mkdir -p "$base_dir/config"
 
 echo "Directories are well  created!"
 
-touch submission_reminder_app/app/reminder.sh
-touch submission_reminder_app/modules/functions.sh
-touch submission_reminder_app/assets/submissions.txt
-touch submission_reminder_app/config/config.env
-touch submission_reminder_app/startup.sh
+touch "$base_dir/app/reminder.sh"
+touch "$base_dir/modules/functions.sh"
+touch "$base_dir/assets/submissions.txt"
+touch "$base_dir/config/config.env"
+touch "$base_dir/startup.sh"
 
 echo "Files are also created!"
 
 echo 'ASSIGNMENT="Shell Navigation"
-DAYS_REMAINING=2' > submission_reminder_app/config/config.env
+DAYS_REMAINING=2' > "$base_dir/config/config.env"
 
 echo '#!/bin/bash
 
@@ -37,7 +49,7 @@ echo "Assignment: $ASSIGNMENT"
 echo "Days remaining to submit: $DAYS_REMAINING days"
 echo "--------------------------------------------"
 
-check_submissions $submissions_file' > submission_reminder_app/app/reminder.sh
+check_submissions $submissions_file' > "$base_dir/app/reminder.sh"
 
 
 echo '#!/bin/bash
@@ -59,7 +71,7 @@ function check_submissions {
             echo "Reminder: $student has not submitted the $ASSIGNMENT assignment!"
         fi
     done < <(tail -n +2 "$submissions_file") # Skip the header
-}' > submission_reminder_app/modules/functions.sh
+}' > "$base_dir/modules/functions.sh"
 echo '#!/bin/bash
 
 # Step 1: Make sure we are in the correct directory
@@ -71,9 +83,9 @@ echo "Starting the Reminder App..."
 # Execute the reminder script
 bash ./app/reminder.sh
 
-echo "Reminder App has been executed successfully!"' > submission_reminder_app/startup.sh
+echo "Reminder App has been executed successfully!"' > "$base_dir/startup.sh"
 
-cat <<EOL >> submission_reminder_app/assets/submissions.txt
+cat <<EOL >> $base_dir/assets/submissions.txt
 Student Name, Assignment, Status
 Ashelia, Shell Navigation, not submitted
 Emma, Shell Navigation, submitted
@@ -82,6 +94,6 @@ Nelly, Shell Navigation, submitted
 Amelia, Shell Navigation, not submitted
 EOL
 
-echo "Submission  with new records!"
+echo "Environment setup complete! Run ./startup to start the application"
 
-chmod +x submission_reminder_app/startup.sh
+chmod +x "$base_dir/startup.sh"
